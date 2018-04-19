@@ -22,7 +22,7 @@ var jwkMap     = getJWK(jwkUrl + "/.well-known/jwks.json")
 
 func SignUp(user string, pass string, email string, name string) (*cognitoidentityprovider.SignUpOutput, error) {
 	updatedAt := strconv.FormatInt(time.Now().Unix(), 10)
-	shash := SecretHash(user, clientId, os.Getenv("CLIENT_SECRET"))
+	shash := secretHash(user, clientId, os.Getenv("CLIENT_SECRET"))
 	return cogClient.SignUp(&cognitoidentityprovider.SignUpInput{
 		ClientId: &clientId,
 		Username: &user,
@@ -46,7 +46,7 @@ func SignUp(user string, pass string, email string, name string) (*cognitoidenti
 }
 
 func ConfirmSignUp(code, user string) (*cognitoidentityprovider.ConfirmSignUpOutput, error) {
-	shash := SecretHash(user, clientId, os.Getenv("CLIENT_SECRET"))
+	shash := secretHash(user, clientId, os.Getenv("CLIENT_SECRET"))
 	return cogClient.ConfirmSignUp(&cognitoidentityprovider.ConfirmSignUpInput{
 		ClientId: &clientId,
 		ConfirmationCode: &code,
@@ -56,7 +56,7 @@ func ConfirmSignUp(code, user string) (*cognitoidentityprovider.ConfirmSignUpOut
 }
 
 func LogIn(user, pass string) (*cognitoidentityprovider.InitiateAuthOutput, error) {
-	shash := SecretHash(user, clientId, os.Getenv("CLIENT_SECRET"))
+	shash := secretHash(user, clientId, os.Getenv("CLIENT_SECRET"))
 	return cogClient.InitiateAuth(&cognitoidentityprovider.InitiateAuthInput{
 		AuthFlow:          &authFlow,
 		AuthParameters:    map[string]*string{
@@ -93,7 +93,7 @@ func ValidateJwt(jwtStr string) (*models.AuthenticatedUser, error) {
 func ForgotPassword(user string) (*cognitoidentityprovider.ForgotPasswordOutput, error) {
 	return cogClient.ForgotPassword(&cognitoidentityprovider.ForgotPasswordInput{
 		ClientId:          &clientId,
-		SecretHash:        aws.String(SecretHash(user, clientId, os.Getenv("CLIENT_SECRET"))),
+		SecretHash:        aws.String(secretHash(user, clientId, os.Getenv("CLIENT_SECRET"))),
 		Username:          &user,
 	})
 }
@@ -103,7 +103,7 @@ func ConfirmForgotPassword(code, user, pass string) (*cognitoidentityprovider.Co
 		ClientId:          &clientId,
 		ConfirmationCode:  &code,
 		Password:          &pass,
-		SecretHash:        aws.String(SecretHash(user, clientId, os.Getenv("CLIENT_SECRET"))),
+		SecretHash:        aws.String(secretHash(user, clientId, os.Getenv("CLIENT_SECRET"))),
 		Username:          &user,
 	})
 }
@@ -119,7 +119,7 @@ func ChangePassword(accessToken, pass, newPass string) (*cognitoidentityprovider
 func ResendSignUpCode(user string) (*cognitoidentityprovider.ResendConfirmationCodeOutput, error) {
 	return cogClient.ResendConfirmationCode(&cognitoidentityprovider.ResendConfirmationCodeInput{
 		ClientId:          aws.String(clientId),
-		SecretHash:        aws.String(SecretHash(user, clientId, os.Getenv("CLIENT_SECRET"))),
+		SecretHash:        aws.String(secretHash(user, clientId, os.Getenv("CLIENT_SECRET"))),
 		Username:          aws.String(user),
 	})
 }

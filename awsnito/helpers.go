@@ -16,7 +16,7 @@ import (
 	"crypto/sha256"
 )
 
-type JWKKey struct {
+type jwkKey struct {
 	Alg string
 	E   string
 	Kid string
@@ -24,17 +24,17 @@ type JWKKey struct {
 	N   string
 	Use string
 }
-type JWK struct {
-	Keys []JWKKey
+type jwk struct {
+	Keys []jwkKey
 }
 
 var jwkUri = "https://cognito-idp.%v.amazonaws.com/%v"
 
-func getJWK(jwkURL string) map[string]JWKKey {
-	jwk := &JWK{}
+func getJWK(jwkURL string) map[string]jwkKey {
+	jwk := &jwk{}
 	getJSON(jwkURL, jwk)
 
-	jwkMap := make(map[string]JWKKey, 0)
+	jwkMap := make(map[string]jwkKey, 0)
 	for _, entryValue := range jwk.Keys {
 		jwkMap[entryValue.Kid] = entryValue
 	}
@@ -215,7 +215,7 @@ func claimsToUser(muhClaims jwt.MapClaims, authedUser *models.AuthenticatedUser)
 	}
 }
 
-func SecretHash(username, clientID, clientSecret string) string {
+func secretHash(username, clientID, clientSecret string) string {
 	mac := hmac.New(sha256.New, []byte(clientSecret))
 	mac.Write([]byte(username + clientID))
 	return base64.StdEncoding.EncodeToString(mac.Sum(nil))
