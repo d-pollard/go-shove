@@ -40,6 +40,8 @@ func main() {
 	//a,b := awsnito.ForgotPassword(user)
 	//a,b := awsnito.ConfirmForgotPassword(code, user, pass)
 	//a,b := awsnito.ChangePassword(jwtStr, pass, newPass)
+	//a,b := awsnito.ResendSignUpCode(user)
+	
 
 	if b != nil {
 		panic(b)
