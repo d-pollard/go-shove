@@ -45,13 +45,12 @@ func getJSON(url string, target interface{}) error {
 	httpClient := &http.Client{
 		Timeout:       10 * time.Second,
 	}
-
 	res, err := httpClient.Get(url)
-	defer res.Body.Close()
 
 	if err != nil {
 		return err
 	}
+	defer res.Body.Close()
 
 	return json.NewDecoder(res.Body).Decode(target)
 }
