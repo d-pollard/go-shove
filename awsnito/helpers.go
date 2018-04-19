@@ -1,19 +1,19 @@
 package awsnito
 
 import (
-	"net/http"
-	"encoding/json"
-	"time"
-	"crypto/rsa"
-	"encoding/base64"
-	"math/big"
-	"encoding/binary"
-	"github.com/dgrijalva/jwt-go"
-	"fmt"
-	"strings"
-	"github.com/d-pollard/go-shove/models"
 	"crypto/hmac"
+	"crypto/rsa"
 	"crypto/sha256"
+	"encoding/base64"
+	"encoding/binary"
+	"encoding/json"
+	"fmt"
+	"github.com/d-pollard/go-shove/models"
+	"github.com/dgrijalva/jwt-go"
+	"math/big"
+	"net/http"
+	"strings"
+	"time"
 )
 
 type jwkKey struct {
@@ -43,7 +43,7 @@ func getJWK(jwkURL string) map[string]jwkKey {
 
 func getJSON(url string, target interface{}) error {
 	httpClient := &http.Client{
-		Timeout:       10 * time.Second,
+		Timeout: 10 * time.Second,
 	}
 	res, err := httpClient.Get(url)
 
@@ -195,22 +195,22 @@ func claimsToUser(muhClaims jwt.MapClaims, authedUser *models.AuthenticatedUser)
 	if tokenUse, exists := muhClaims["token_use"]; exists {
 		authedUser.TokenUse = tokenUse.(string)
 	}
-	if scope, exists    := muhClaims["scope"];     exists {
+	if scope, exists := muhClaims["scope"]; exists {
 		authedUser.Level = scope.(string)
 	}
 	if authTime, exists := muhClaims["auth_time"]; exists {
 		authedUser.AuthTime = authTime.(float64)
 	}
-	if expTime, exists  := muhClaims["exp"];       exists {
+	if expTime, exists := muhClaims["exp"]; exists {
 		authedUser.TokenExpireTime = expTime.(float64)
 	}
 	if clientID, exists := muhClaims["client_id"]; exists {
 		authedUser.ClientAppID = clientID.(string)
 	}
-	if uuid, exists     := muhClaims["sub"];       exists {
+	if uuid, exists := muhClaims["sub"]; exists {
 		authedUser.UUID = uuid.(string)
 	}
-	if username, exists := muhClaims["username"];  exists {
+	if username, exists := muhClaims["username"]; exists {
 		authedUser.Username = username.(string)
 	}
 }
