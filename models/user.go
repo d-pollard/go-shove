@@ -10,4 +10,7 @@ type AuthenticatedUser struct {
 	ClientAppID     string
 	UUID            string
 	IsTokenValid    bool
+	Email           string
+	Name            string
+	UpdatedAt       float64
 }

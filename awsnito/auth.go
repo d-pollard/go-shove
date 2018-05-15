@@ -17,7 +17,8 @@ var cogClient = cognitoidentityprovider.New(ses)
 var clientId = os.Getenv("CLIENT_ID")
 var attr = []string{"email", "name", "updated_at"}
 var authFlow = "USER_PASSWORD_AUTH"
-var jwkUrl = fmt.Sprintf(jwkUri, os.Getenv("AWS_REGION"), os.Getenv("POOL_ID"))
+var poolId = os.Getenv("POOL_ID")
+var jwkUrl = fmt.Sprintf(jwkUri, os.Getenv("AWS_REGION"), poolId)
 var jwkMap = getJWK(jwkUrl + "/.well-known/jwks.json")
 
 func SignUp(user string, pass string, email string, name string) (*cognitoidentityprovider.SignUpOutput, error) {

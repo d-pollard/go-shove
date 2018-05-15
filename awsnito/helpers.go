@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/d-pollard/go-shove/models"
 	"github.com/dgrijalva/jwt-go"
+	"io/ioutil"
 	"math/big"
 	"net/http"
 	"strings"
@@ -29,11 +30,24 @@ type jwk struct {
 }
 
 var jwkUri = "https://cognito-idp.%v.amazonaws.com/%v"
+var localJwk = "./" + poolId + "_jwks.json"
 
 func getJWK(jwkURL string) map[string]jwkKey {
 	jwk := &jwk{}
-	getJSON(jwkURL, jwk)
-
+	if raw, err := ioutil.ReadFile(localJwk); err == nil {
+		json.Unmarshal(raw, jwk)
+	} else {
+		getJSON(jwkURL, jwk)
+		jsnBytes, err := json.Marshal(jwk)
+		if err != nil {
+			fmt.Println("UNMARSHAL ERROR OF JWK: ", err)
+		} else {
+			err := ioutil.WriteFile(localJwk, jsnBytes, 0644)
+			if err != nil {
+				fmt.Println("WRITEFILE ERROR OF JWK: ", err)
+			}
+		}
+	}
 	jwkMap := make(map[string]jwkKey, 0)
 	for _, entryValue := range jwk.Keys {
 		jwkMap[entryValue.Kid] = entryValue
@@ -46,12 +60,10 @@ func getJSON(url string, target interface{}) error {
 		Timeout: 10 * time.Second,
 	}
 	res, err := httpClient.Get(url)
-
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
-
 	return json.NewDecoder(res.Body).Decode(target)
 }
 
