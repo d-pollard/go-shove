@@ -29,15 +29,15 @@ func SignUp(user string, pass string, email string, name string) (*cognitoidenti
 		Password:   &pass,
 		SecretHash: &shash,
 		UserAttributes: []*cognitoidentityprovider.AttributeType{
-			&cognitoidentityprovider.AttributeType{
+			{
 				Name:  &attr[0],
 				Value: &email,
 			},
-			&cognitoidentityprovider.AttributeType{
+			{
 				Name:  &attr[1],
 				Value: &name,
 			},
-			&cognitoidentityprovider.AttributeType{
+			{
 				Name:  &attr[2],
 				Value: &updatedAt,
 			},
@@ -122,4 +122,19 @@ func ResendSignUpCode(user string) (*cognitoidentityprovider.ResendConfirmationC
 		SecretHash: aws.String(secretHash(user, clientId, os.Getenv("CLIENT_SECRET"))),
 		Username:   aws.String(user),
 	})
+}
+
+func GetUser(accessToken string) (*cognitoidentityprovider.GetUserOutput, error) {
+	userInput := &cognitoidentityprovider.GetUserInput{
+		AccessToken: &accessToken,
+	}
+	info, err := cogClient.GetUser(userInput)
+	if err != nil {
+		return nil, err
+	}
+	return info, nil
+}
+
+func PlayWith() {
+
 }
