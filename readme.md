@@ -1,4 +1,4 @@
-# GO Cognito Auth Helper
+# GO AWS Cognito Auth Helper
 
 ## Required env variables
 ```dotenv
